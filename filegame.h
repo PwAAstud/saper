@@ -5,4 +5,5 @@
 // #include "minefild.h"
 // #include "scoreBord.h"
 
-void file_game(FILE* sorse);
+int f_move(minefild* game, FILE* source);
+int file_game(FILE* source);
