@@ -116,6 +116,29 @@ void start_move(minefild* game){
     minefild_sopen(game, x, y);
 }
 
+void kont_game(minefild* game){
+    minefild_print(game);
+
+    int end_type= 0;
+    do{
+        move(game);
+        minefild_print(game);
+        end_type = minefild_check_board(game);
+    } while (0 == end_type);
+    
+    if( end_type == 1){
+        printf("mina wybuchla :'(\n");
+    }else if( end_type == 2){
+        printf("udalo ci sie :)\n");
+    }
+
+    char player_name[NAME_LEN];
+    printf("podaj imie (do 10 liter):\n");
+    if(load_name(stdin, player_name) == 1){
+        clear_stdin();
+    }
+}
+
 void hand_game(){
     srand(time(NULL));
     minefild* game;
@@ -159,11 +182,13 @@ int main(int argc, char ** argv){
             printf("zly plik\n");
             return 0;
         }
-        int x = file_game(og_file);
-        printf("czy kontynuowac: %d\n", x);
+        minefild* game = file_game(og_file);
+        if(minefild_check_board(game) == 0){
+            kont_game(game);
+        }
+        
     }else{
         hand_game();
     }
-
     return 0;
 }

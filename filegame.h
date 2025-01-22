@@ -6,4 +6,4 @@
 // #include "scoreBord.h"
 
 int f_move(minefild* game, FILE* source);
-int file_game(FILE* source);
+minefild* file_game(FILE* source);

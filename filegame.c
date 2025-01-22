@@ -9,7 +9,10 @@ int f_move(minefild* game, FILE* source){
     char comand;
     int x,y;
     while(1){
-        if(fscanf(source, " %c %d %d", &comand, &x, &y) < 3){
+        if(fscanf(source, " %c", &comand) == EOF){
+            return 1;
+        }
+        if(fscanf(source, " %d %d", &x, &y) < 2){
             printf("plik zawiera zly zapis %c; %d; %d; \n", comand, x, y);
             continue;
         }
@@ -34,7 +37,7 @@ int f_move(minefild* game, FILE* source){
     return 1;
 }
 
-int file_game(FILE* source){
+minefild* file_game(FILE* source){
     int poprawne_kroki = 0;
     minefild* game = minefild_for_file(source);
 
@@ -49,14 +52,9 @@ int file_game(FILE* source){
     } while (0 == end_type && czy_k == 0);
 
     if( end_type == 1){
-        printf("liczba poprawnych krokow: %d\n liczba uzyskanych punktow: %d\n 0 - gra zakonczona niepwodzeniem", poprawne_kroki, game->score);
-        return 0;
+        printf("liczba poprawnych krokow: %d\n liczba uzyskanych punktow: %d\n 0 - gra zakonczona niepwodzeniem\n", poprawne_kroki, game->score);
     }else if( end_type == 2){
-        printf("liczba poprawnych krokow: %d\n liczba uzyskanych punktow: %d\n 1 - gra zakonczona pwodzeniem", poprawne_kroki, game->score);
-        return 0;
+        printf("liczba poprawnych krokow: %d\n liczba uzyskanych punktow: %d\n 1 - gra zakonczona pwodzeniem\n", poprawne_kroki, game->score);
     }
-    if(end_type == 0){
-        return 1;
-    }
-    return -1;
+    return game;
 }
