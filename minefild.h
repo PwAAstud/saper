@@ -22,6 +22,8 @@ int minefild_cord_to_ind(minefild*, int, int);
 
 void minefild_print(minefild*);
 
+void minefild_end_print(minefild*);
+
 int minefild_open(minefild*, int, int);
 
 void minefild_sopen(minefild*, int, int);

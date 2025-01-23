@@ -147,19 +147,21 @@ void start_move(minefild* game, CommandLog* log){
 
 void kont_game(minefild* game){
     CommandLog* log = init_command_log();
-    minefild_print(game);
+    // minefild_print(game);
 
     int end_type= 0;
     int x = 0;
     do{
-        x = move(game, log);
         minefild_print(game);
+        x = move(game, log);
         end_type = minefild_check_board(game);
     } while (0 == end_type && x == 0);
     
     if( end_type == 1){
+        minefild_end_print(game);
         printf("mina wybuchla :'(\n");
     }else if( end_type == 2){
+        minefild_print(game);
         printf("udalo ci sie :)\n");
     }else if(x == 1){
         printf("plik pomyslinie zapisany\n");
@@ -171,6 +173,12 @@ void kont_game(minefild* game){
     if(load_name(stdin, player_name) == 1){
         clear_stdin();
     }
+
+    scorebord* table = scorebord_load();
+    scorebord_add(table, game->score, player_name);
+    printf("najlepsi gracze\n");
+    scorebord_print(table);
+    scorebord_save(table);
 }
 
 void hand_game(){
@@ -185,14 +193,16 @@ void hand_game(){
     int end_type= 0;
     int x = 0;
     do{
-        x = move(game, log);
         minefild_print(game);
+        x = move(game, log);
         end_type = minefild_check_board(game);
     } while (0 == end_type && x == 0);
     
     if( end_type == 1){
+        minefild_end_print(game);
         printf("mina wybuchla :'(\n");
     }else if( end_type == 2){
+        minefild_print(game);
         printf("udalo ci sie :)\n");
     }else if(x == 1){
         printf("plik pomyslinie zapisany\n");
