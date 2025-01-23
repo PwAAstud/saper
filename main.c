@@ -150,16 +150,20 @@ void kont_game(minefild* game){
     minefild_print(game);
 
     int end_type= 0;
+    int x = 0;
     do{
-        move(game, log);
+        x = move(game, log);
         minefild_print(game);
         end_type = minefild_check_board(game);
-    } while (0 == end_type);
+    } while (0 == end_type && x == 0);
     
     if( end_type == 1){
         printf("mina wybuchla :'(\n");
     }else if( end_type == 2){
         printf("udalo ci sie :)\n");
+    }else if(x == 1){
+        printf("plik pomyslinie zapisany\n");
+        return;
     }
 
     char player_name[NAME_LEN];
