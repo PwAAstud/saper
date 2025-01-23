@@ -1,6 +1,7 @@
 #ifndef _minefild_h
 #define _minefild_h
 
+#include "steps.h"
 typedef struct{
     int x,y;
     // 0 visible; 1 is cover; 2 is flagd
@@ -26,6 +27,8 @@ int minefild_open(minefild*, int, int);
 void minefild_sopen(minefild*, int, int);
 
 void minefild_flag(minefild*, int, int);
+
+void minefild_to_file(minefild*,CommandLog*, FILE*);
 
 int minefild_check_board(minefild*);
 

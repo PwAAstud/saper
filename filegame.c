@@ -21,7 +21,7 @@ int f_move(minefild* game, FILE* source){
             continue;
         }
         if( x <= 0 || y <= 0 || x > game->x || y > game->y){
-            printf("plik zawiera zle koordynaty\n");
+            printf("plik zawiera zle koordynaty x:%d, y:%d\n", x, y);
             continue;
         }
         break;

@@ -1,6 +1,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include "minefild.h"
+#include "steps.h"
 
 #define MINE 9
 
@@ -187,6 +188,19 @@ void minefild_flag(minefild* play, int x, int y){
     }
     int switch_to[2] = {2,1};
     play->cover[pos] = switch_to[play->cover[pos]-1];
+}
+
+void minefild_to_file(minefild* game, CommandLog* log, FILE* save){
+    printf("plik otwarty\n");
+    fprintf(save, "%d %d\n", game->x, game->y);
+    for(int i=0; i<game->x*game->y; i++){
+        if(game->mines[i] == MINE){
+            fprintf(save, "m");
+        }else{
+            fprintf(save, " ");
+        }
+    }
+    fprintf(save, "%s\n", log->data);
 }
 
 // 0-nic, 1-przegrana, 2-wygrana

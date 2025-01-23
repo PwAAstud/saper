@@ -6,6 +6,7 @@
 #include "minefild.h"
 #include "scorebord.h"
 #include "filegame.h"
+#include "steps.h"
 
 #define BUFFERSIZE 256
 
@@ -63,26 +64,46 @@ minefild* setup(){
 
 }
 
-int move(minefild* game){
+int move(minefild* game, CommandLog* log){
     printf("podaj ruch\n");
     char comand;
+    char file[256];
     int x,y;
     while(1){
-        if(scanf("%c %d %d", &comand, &x, &y) < 3){
-            printf("zly zapis %c\n", comand);
+        if(scanf("%c", &comand) < 1){
+            printf("zla komenda %c\n", comand);
             clear_stdin();
             continue;
         }
+        if(comand == 's'){
+            if(scanf("%255s", file) < 1){
+                printf("zly zapis %255s\n", file);
+                clear_stdin();
+                continue;
+            }
+        }
+        if(comand == 'f' || comand == 'r'){
+            if(scanf("%d %d", &x, &y) < 2){
+                printf("zly zapis %c\n", comand);
+                clear_stdin();
+                continue;
+            }
+        }
         clear_stdin();
-        if( comand != 'f' && comand != 'r'){
+        if( comand != 'f' && comand != 'r' && comand != 's'){
             printf("nieznana akcja\n");
             continue;
         }
-        if( x <= 0 || y <= 0 || x > game->x || y > game->y){
+        if(comand != 's' && (x <= 0 || y <= 0 || x > game->x || y > game->y)){
             printf("zle kordynaty\n");
             continue;
         }
         break;
+    }
+    if(comand != 's'){
+        char command_s[256];
+        concatenate_to_string(comand, x, y, command_s);
+        add_command_to_log(log, command_s);
     }
     x--;
     y--;
@@ -91,11 +112,16 @@ int move(minefild* game){
     }else if(comand == 'f'){
         minefild_flag(game, x, y);
         return 0;
+    }else if(comand == 's'){
+        FILE* save = fopen(file, "w");
+        minefild_to_file(game, log, save);
+        fclose(save);
+        return 1;
     }
     return 1;
 }
 
-void start_move(minefild* game){
+void start_move(minefild* game, CommandLog* log){
     printf("podaj startowe kordynaty\nr ");
     int x,y;
     while(1){
@@ -111,17 +137,21 @@ void start_move(minefild* game){
         break;
     }
     clear_stdin();
+    char command_s[256];
+    concatenate_to_string('r', x, y, command_s);
+    add_command_to_log(log, command_s);
     x--;
     y--;
     minefild_sopen(game, x, y);
 }
 
 void kont_game(minefild* game){
+    CommandLog* log = init_command_log();
     minefild_print(game);
 
     int end_type= 0;
     do{
-        move(game);
+        move(game, log);
         minefild_print(game);
         end_type = minefild_check_board(game);
     } while (0 == end_type);
@@ -142,22 +172,27 @@ void kont_game(minefild* game){
 void hand_game(){
     srand(time(NULL));
     minefild* game;
+    CommandLog* log = init_command_log();
     game = setup();
     minefild_print(game);
-    start_move(game);
+    start_move(game, log);
     minefild_print(game);
 
     int end_type= 0;
+    int x = 0;
     do{
-        move(game);
+        x = move(game, log);
         minefild_print(game);
         end_type = minefild_check_board(game);
-    } while (0 == end_type);
+    } while (0 == end_type && x == 0);
     
     if( end_type == 1){
         printf("mina wybuchla :'(\n");
     }else if( end_type == 2){
         printf("udalo ci sie :)\n");
+    }else if(x == 1){
+        printf("plik pomyslinie zapisany\n");
+        return;
     }
 
     char player_name[NAME_LEN];
